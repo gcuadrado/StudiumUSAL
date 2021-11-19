@@ -46,7 +46,7 @@ public class WebpageActivity extends AppCompatActivity {
                     PERMISO_CONCEDIDO);
 
         }
-        String url = getIntent().getExtras().getString("URL","defaultKey");
+        String url_web = getIntent().getExtras().getString("URL","defaultKey");
         webview = new WebView(this);
 
 
@@ -58,7 +58,7 @@ public class WebpageActivity extends AppCompatActivity {
         webview.setWebChromeClient(new WebChromeClient());
         setContentView(webview);
 
-        webview.loadUrl(url);
+        webview.loadUrl(url_web);
 
         webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -102,12 +102,13 @@ public class WebpageActivity extends AppCompatActivity {
                                             long contentLength) {
                     DownloadManager.Request request = new DownloadManager.Request(
                             Uri.parse(url));
-
+                    String cookie = CookieManager.getInstance().getCookie(url);
                     request.allowScanningByMediaScanner();
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
                     request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(
                             url, contentDisposition, mimetype));;
                     DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    request.addRequestHeader("Cookie", cookie);
                     dm.enqueue(request);
                     Toast.makeText(getApplicationContext(), "Descargando archivo", //To notify the Client that the file is being downloaded
                             Toast.LENGTH_LONG).show();
